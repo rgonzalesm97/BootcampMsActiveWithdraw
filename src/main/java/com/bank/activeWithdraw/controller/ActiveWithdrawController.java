@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.bank.activeWithdraw.service.ActiveWithdrawService;
 
@@ -22,6 +23,8 @@ public class ActiveWithdrawController {
 	
 	private final ActiveWithdrawService activeWithdrawService;
 
+	private final WebClient.Builder webClientBuilder = WebClient.builder();
+	
 	@GetMapping
 	public String test() {
 		return "hello world";
