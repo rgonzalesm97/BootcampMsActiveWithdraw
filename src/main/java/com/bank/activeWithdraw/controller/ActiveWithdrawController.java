@@ -1,19 +1,15 @@
 package com.bank.activeWithdraw.controller;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.reactive.function.client.WebClient;
 
+import com.bank.activeWithdraw.model.Credit;
 import com.bank.activeWithdraw.service.ActiveWithdrawService;
 
 import lombok.RequiredArgsConstructor;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -23,11 +19,12 @@ public class ActiveWithdrawController {
 	
 	private final ActiveWithdrawService activeWithdrawService;
 
-	private final WebClient.Builder webClientBuilder = WebClient.builder();
-	
-	@GetMapping
-	public String test() {
-		return "hello world";
+	@PostMapping("/consume/{id}")
+	public Mono<Credit> withdraw(@PathVariable("id") String idProduct,
+								@RequestParam Double amount) {
+		
+		return activeWithdrawService.ConsumeCredit(idProduct, amount).switchIfEmpty(Mono.just(new Credit()));
+		
 	}
 	
 }
