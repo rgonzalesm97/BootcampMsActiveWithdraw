@@ -1,9 +1,9 @@
 package com.bank.activeWithdraw.service;
 
-import com.bank.activeWithdraw.model.Credit;
+import com.bank.activeWithdraw.model.History;
 
 import reactor.core.publisher.Mono;
 
 public interface ActiveWithdrawService {
-	public Mono<Credit> ConsumeCredit(String idCredit, Double amount);
+	public Mono<History> ConsumeCredit(String idCredit, Double amount);
 }

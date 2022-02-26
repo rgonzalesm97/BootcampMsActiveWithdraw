@@ -17,37 +17,42 @@ public class ActiveWithdrawServiceImpl implements ActiveWithdrawService{
 	private ActiveWithdrawProxy activeWithdrawProxy = new ActiveWithdrawProxy();
 	
 	@Override
-	public Mono<Credit> ConsumeCredit(String idCredit, Double amount) {
+	public Mono<History> ConsumeCredit(String idCredit, Double amount) {
 		
-		Mono<Credit> actualCredit = activeWithdrawProxy.getCredit(idCredit);
+		return activeWithdrawProxy.getCredit(idCredit)
+				 				  .flatMap(resp->checkBalance(resp, amount))
+				 				  .flatMap(resp->consumeCredit(resp, amount))
+				 				  .flatMap(activeWithdrawProxy::updateAccount)
+				 				  .flatMap(resp->saveHistory(idCredit, "credit consume", amount, null));
 		
-		return actualCredit.flatMap(x -> {
-			if(x.getBalance()>=amount) {
-				x.setBalance(x.getBalance()-amount);
-				x.setDebt(x.getDebt()+amount);
-				
-				return activeWithdrawProxy.updateAccount(x)
-											.doOnSuccess(y -> {
-												if(y.getId()!=null) {
-													saveHistory(y.getId(), "credit consume", amount);
-												}
-											});
-			}else {
-				return Mono.empty();
-			}
-		});
 	}	
 	
-	public void saveHistory(String idProduct,
-							String type,
-							Double amount) {
+	
+	//AVTIVEWITHDRAW UTIL METHODS
+	public Mono<Credit> checkBalance(Credit credit, Double amount){
+		return credit.getBalance() > amount ? Mono.just(credit)
+											: Mono.error(() -> new IllegalArgumentException("Not enough balance"));
+	}
+	
+	public Mono<Credit> consumeCredit(Credit credit, Double amount){
+		credit.setBalance(credit.getBalance()-amount);
+		credit.setDebt(credit.getDebt()+amount);
+		return Mono.just(credit);
+	}
+	
+	public Mono<History> saveHistory(String idProduct,
+									String type,
+									Double amount,
+									String idThirdPartyProduct) {
+		
 		History history = new History();
 		history.setIdProduct(idProduct);
 		history.setType(type);
 		history.setAmount(amount);
+		history.setIdThirdPartyProduct(idThirdPartyProduct);
 		history.setDate(new Date());
 		
-		activeWithdrawProxy.saveHistory(history);
+		return activeWithdrawProxy.saveHistory(history);
 		
 	}
 	

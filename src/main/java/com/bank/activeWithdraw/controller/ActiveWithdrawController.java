@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bank.activeWithdraw.model.Credit;
+import com.bank.activeWithdraw.model.History;
 import com.bank.activeWithdraw.service.ActiveWithdrawService;
 
 import lombok.RequiredArgsConstructor;
@@ -20,10 +20,10 @@ public class ActiveWithdrawController {
 	private final ActiveWithdrawService activeWithdrawService;
 
 	@PostMapping("/consume/{id}")
-	public Mono<Credit> withdraw(@PathVariable("id") String idProduct,
+	public Mono<History> withdraw(@PathVariable("id") String idProduct,
 								@RequestParam Double amount) {
 		
-		return activeWithdrawService.ConsumeCredit(idProduct, amount).switchIfEmpty(Mono.just(new Credit()));
+		return activeWithdrawService.ConsumeCredit(idProduct, amount);
 		
 	}
 	
