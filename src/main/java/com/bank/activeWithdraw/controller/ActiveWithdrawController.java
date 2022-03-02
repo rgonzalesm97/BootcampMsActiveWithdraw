@@ -23,7 +23,7 @@ public class ActiveWithdrawController {
 	public Mono<History> withdraw(@PathVariable("id") String idProduct,
 								@RequestParam Double amount) {
 		
-		return activeWithdrawService.ConsumeCredit(idProduct, amount);
+		return activeWithdrawService.consumeCredit(idProduct, amount);
 		
 	}
 	

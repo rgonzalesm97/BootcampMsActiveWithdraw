@@ -9,20 +9,23 @@ import com.bank.activeWithdraw.model.Credit;
 import com.bank.activeWithdraw.proxy.ActiveWithdrawProxy;
 import com.bank.activeWithdraw.service.ActiveWithdrawService;
 
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
 @Service
+@AllArgsConstructor
 public class ActiveWithdrawServiceImpl implements ActiveWithdrawService{
 
-	private ActiveWithdrawProxy activeWithdrawProxy = new ActiveWithdrawProxy();
+	private final ActiveWithdrawProxy activeWithdrawProxy = new ActiveWithdrawProxy();
 	
 	@Override
-	public Mono<History> ConsumeCredit(String idCredit, Double amount) {
+	public Mono<History> consumeCredit(String idCredit, Double amount) {
 		
 		return activeWithdrawProxy.getCredit(idCredit)
 				 				  .flatMap(resp->checkBalance(resp, amount))
 				 				  .flatMap(resp->consumeCredit(resp, amount))
-				 				  .flatMap(activeWithdrawProxy::updateAccount)
+				 				  .flatMap(activeWithdrawProxy::updateCredit)
 				 				  .flatMap(resp->saveHistory(idCredit, "credit consume", amount, null));
 		
 	}	

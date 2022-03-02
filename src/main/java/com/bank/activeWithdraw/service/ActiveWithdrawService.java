@@ -5,5 +5,5 @@ import com.bank.activeWithdraw.model.History;
 import reactor.core.publisher.Mono;
 
 public interface ActiveWithdrawService {
-	public Mono<History> ConsumeCredit(String idCredit, Double amount);
+	public Mono<History> consumeCredit(String idCredit, Double amount);
 }

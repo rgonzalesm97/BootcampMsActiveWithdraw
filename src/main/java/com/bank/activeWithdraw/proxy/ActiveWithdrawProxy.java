@@ -21,7 +21,7 @@ public class ActiveWithdrawProxy {
 								.bodyToMono(Credit.class);
 	}
 	
-	public Mono<Credit> updateAccount(Credit credit){
+	public Mono<Credit> updateCredit(Credit credit){
 		return webClientBuilder.build()
 								.put()
 								.uri("http://localhost:8090/credit/")
